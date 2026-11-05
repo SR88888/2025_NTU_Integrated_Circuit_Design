@@ -1,42 +1,42 @@
 # 2025 NTU Integrated Circuit Design
 
-國立臺灣大學 2025 年 **Integrated Circuit Design** 課程實作紀錄，包含 RSA 電路作業與影像卷積期末專題。兩個專案均提供 Verilog RTL、題目規格與壓縮測試環境。
+Coursework from the 2025 **Integrated Circuit Design** course at National Taiwan University, including an RSA circuit assignment and an image convolution final project. Both projects provide Verilog RTL, specifications, and archived test environments.
 
-## 專案內容
+## Projects
 
-| 專案 | 主要功能 | RTL | 規格 |
+| Project | Main features | RTL | Specification |
 | --- | --- | --- | --- |
-| HW2：RSA | 16-bit 輸入／輸出的 RSA 相關運算，含模乘與 Montgomery 運算模組 | [RSA.v](HW2/RSA.v) | [ICD_hw2.pdf](HW2/ICD_hw2.pdf) |
-| Final：Image Convolution | 64 × 64 灰階影像卷積、ReLU 與 2 × 2 max-pooling | [CONV.v](Final%20Project/CONV.v) | [ICD_final.pdf](Final%20Project/ICD_final.pdf) |
+| HW2: RSA | RSA-related operations with 16-bit inputs/outputs, including modular multiplication and Montgomery arithmetic modules | [RSA.v](HW2/RSA.v) | [ICD_hw2.pdf](HW2/ICD_hw2.pdf) |
+| Final: Image Convolution | Convolution, ReLU, and 2 × 2 max-pooling for 64 × 64 grayscale images | [CONV.v](Final%20Project/CONV.v) | [ICD_final.pdf](Final%20Project/ICD_final.pdf) |
 
-期末專題支援一般 3 × 3 卷積與 dilated 3 × 3 卷積模式。卷積及 ReLU 產生 64 × 64 的中間結果，再以 stride 2 的 max-pooling 產生 32 × 32 輸出；資料透過題目定義的記憶體介面存取。
+The final project supports standard 3 × 3 and dilated 3 × 3 convolution modes. Convolution and ReLU produce a 64 × 64 intermediate image, followed by max-pooling with stride 2 to produce a 32 × 32 output. Data is accessed through the memory interface defined in the project specification.
 
-## 目錄結構
+## Repository Layout
 
 ```text
 .
 ├── HW2/
-│   ├── RSA.v            # RSA RTL 實作
-│   ├── ICD_hw2.pdf      # 作業規格
-│   └── ICD_hw2.tar      # 題目 RTL 模板、測試平台與測試資料
+│   ├── RSA.v            # RSA RTL implementation
+│   ├── ICD_hw2.pdf      # Assignment specification
+│   └── ICD_hw2.tar      # Provided RTL template, testbench, and test data
 └── Final Project/
-    ├── CONV.v           # 卷積 RTL 實作
-    ├── ICD_final.pdf    # 專題規格
-    └── ICD_final.tar    # 測試平台、patterns 與各階段設定
+    ├── CONV.v           # Convolution RTL implementation
+    ├── ICD_final.pdf    # Project specification
+    └── ICD_final.tar    # Testbench, patterns, and design-stage settings
 ```
 
-壓縮檔內含題目模板；以下範例會將目錄外的實作版本複製到解壓後的測試環境中。
+The archives contain the provided templates. The examples below copy the standalone implementations into the extracted test environments.
 
-## 環境需求
+## Requirements
 
-- Linux／Unix shell、`tar`。
-- 支援 Verilog／SystemVerilog 的模擬器；下列範例使用 Synopsys VCS。
-- 邏輯合成需要 Synopsys Design Compiler。
-- 閘級與佈局後模擬需要對應的標準元件模型；期末專題設定引用課程的 N16 ADFP library 路徑。
+- A Linux/Unix shell and `tar`.
+- A simulator with Verilog/SystemVerilog support. The examples below use Synopsys VCS.
+- Synopsys Design Compiler for synthesis.
+- Matching standard-cell models for gate-level and post-layout simulation. The final project settings reference the course's N16 ADFP library paths.
 
-合成與 APR 需要課程工作站的工具與製程資料，請依自己的環境調整 `.synopsys_dc.setup`、library 與時序設定。
+Synthesis and APR require the tools and process data available on the course workstations. Adjust `.synopsys_dc.setup`, library paths, and timing settings for your environment.
 
-## 快速開始：卷積專題
+## Quick Start: Convolution Project
 
 ```bash
 git clone https://github.com/SR88888/2025_NTU_Integrated_Circuit_Design.git
@@ -50,11 +50,11 @@ cd work/conv/ICD_final/01_RTL
 vcs -full64 -R -sverilog -f rtl.f +define+pat0
 ```
 
-`rtl.f` 會載入 `CONV.v`、`tb_CONV.v` 與記憶體模型。更換 `pat0` 為 `pat1`～`pat9` 可使用壓縮檔附帶的其他影像資料。測試選項區分大小寫，並須從 `01_RTL` 目錄執行，以維持相對路徑正確。
+`rtl.f` loads `CONV.v`, `tb_CONV.v`, and the memory model. Replace `pat0` with `pat1` through `pat9` to use the other image datasets included in the archive. Test options are case-sensitive. Run the commands from `01_RTL` so that relative paths resolve correctly.
 
-## 快速開始：RSA 作業
+## Quick Start: RSA Assignment
 
-下列命令從 repository 根目錄執行：
+Run the following commands from the repository root:
 
 ```bash
 mkdir -p work/rsa
@@ -65,15 +65,15 @@ cd work/rsa/ICD_hw2/01_RTL
 vcs -full64 -R -sverilog RSA.v ../00_TESTBENCH/tb_RSA.v +define+pat0
 ```
 
-RSA 測試環境包含 `pat0`～`pat3`。請搭配規格確認握手訊號與輸入／輸出格式。
+The RSA test environment includes `pat0` through `pat3`. Refer to the specification for handshake signals and input/output formats.
 
-## 合成與實體設計流程
+## Synthesis and Physical Design
 
-期末專題壓縮檔提供 `02_SYN`、`03_GATE`、`04_APR` 與 `05_POST` 的部分設定：
+The final project archive provides settings for `02_SYN`, `03_GATE`, `04_APR`, and `05_POST`:
 
-- `02_SYN/syn.tcl` 與 `CONV.sdc`：合成及時序限制。
-- `03_GATE/gate.f`：閘級模擬檔案清單。
-- `04_APR/mmmc.view`：多模式多角落分析設定。
-- `05_POST/post.f`：佈局後模擬檔案清單。
+- `02_SYN/syn.tcl` and `CONV.sdc`: synthesis and timing constraints.
+- `03_GATE/gate.f`: gate-level simulation file list.
+- `04_APR/mmmc.view`: multi-mode multi-corner analysis configuration.
+- `05_POST/post.f`: post-layout simulation file list.
 
-這些設定會引用前一階段產生的 netlist、SDF 與外部 library；先完成對應階段並核對路徑，再執行後續流程。
+These settings reference netlists and SDF files generated by earlier stages, as well as external libraries. Complete the required stages and check the paths before proceeding.
